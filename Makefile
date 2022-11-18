@@ -5,10 +5,10 @@ HEADERS = $(wildcard kernel/*.h drivers/*.h)
 all: os-image
 
 run: all
-	qemu-system-x86_64 -fda os-image
+	qemu-system-x86_64 -drive file=os-image.img,format=raw,index=0,media=disk
 
 os-image: boot/boot_sect.bin kernel.bin
-	cat $^ > os-image
+	cat $^ > os-image.img
 
 kernel.bin: kernel/kernel_entry.o ${OBJ}
 	ld -o $@ -Ttext 0x1000 $^ --oformat binary
@@ -23,7 +23,7 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 	nasm $< -f bin -I 'boot/16bit/' -o $@
 
 clean:
-	rm -fr *.bin *.o *.dis os-image *map
+	rm -fr *.bin *.o *.dis os-image
 	rm -fr kernel/*.o boot/*.bin drivers/*.o
 
 kernel.dis : kernel.bin

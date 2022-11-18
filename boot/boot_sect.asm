@@ -6,21 +6,7 @@ KERNEL_OFFSET equ 0x1000
     mov bp, 0x9000
     mov sp, bp
 
-
-    mov bx, MSG_REAL_MODE
-    call print_string
-
-    mov bx, ENTER_MSG
-    call print_string
-
-    mov bx, BOOTING_MSG
-    call print_string
-
-    mov bx, ENTER_MSG
-    call print_string
-
     call load_kernel
-
     call switch_to_pm
     jmp $
 
@@ -38,7 +24,7 @@ load_kernel:
     call print_string
 
     mov bx, KERNEL_OFFSET
-    mov dh, 15
+    mov dh, 16
     mov dl, [BOOT_DRIVE]
     call disk_load
 
@@ -52,7 +38,6 @@ BEGIN_PM: ; after the switch we will get here
     ;call print_string_pm ; Note that this will be written at the top left corner
     
     call KERNEL_OFFSET
-    
     jmp $
 
 MSG_REAL_MODE db "Started in 16-bit real mode", 0
@@ -66,7 +51,3 @@ BOOT_DRIVE db 0
 times 510-($-$$) db 0
 dw 0xaa55
 ; =====END_BOOT_SECTOR=====
-
-times 256 dw 'S'
-times 256 dw 'E'
-times 256 dw 'X'
